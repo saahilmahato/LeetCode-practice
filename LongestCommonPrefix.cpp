@@ -1,37 +1,40 @@
-#include <vector>
 #include <string>
+#include <vector>
 
 class Solution {
 public:
-    std::string longestCommonPrefix(std::vector<std::string>& strs) {
-        if (strs.empty()) {
-            return "";
-        }
-
-        std::string prefix = strs[0];
-
-        for (int i=1; i<strs.size(); ++i) {
-            while (strs[i].find(prefix) != 0) {
-                prefix = prefix.substr(0, prefix.size() - 1);
-                if (prefix.empty()) {
-                    return "";
-                }
-            }
-        }
-
-        return prefix;
+  std::string longestCommonPrefix(std::vector<std::string> &strs) {
+    if (strs.empty()) {
+      return "";
     }
+
+    std::string prefix = strs[0];
+
+    for (int i = 1; i < strs.size(); ++i) {
+      while (strs[i].find(prefix) != 0) {
+        prefix = prefix.substr(0, prefix.size() - 1);
+        if (prefix.empty()) {
+          return "";
+        }
+      }
+    }
+
+    return prefix;
+  }
 };
 
 // 🔍 NOTE:
 // strs[i].find(prefix) checks whether the current string contains `prefix`.
 //
-// - std::string::find(substring) returns the index of the first occurrence of `substring`.
-// - If the substring is not found, it returns std::string::npos (a large unsigned value).
-// - Therefore, `strs[i].find(prefix) != 0` means the current string does NOT start with the prefix.
+// - std::string::find(substring) returns the index of the first occurrence of
+// `substring`.
+// - If the substring is not found, it returns std::string::npos (a large
+// unsigned value).
+// - Therefore, `strs[i].find(prefix) != 0` means the current string does NOT
+// start with the prefix.
 //
-// In this algorithm, we only care if the prefix appears at the *start* of each word.
-// Hence, we keep shortening the prefix until `find(prefix)` returns 0,
+// In this algorithm, we only care if the prefix appears at the *start* of each
+// word. Hence, we keep shortening the prefix until `find(prefix)` returns 0,
 // meaning `strs[i]` begins with `prefix`.
 //
 // ✅ Example:
@@ -43,7 +46,6 @@ public:
 // if (!strs[i].starts_with(prefix)) { ... }
 // which is more readable and avoids using find() directly.
 
-
 /*
  * 🎯 Problem: Longest Common Prefix (LeetCode #14)
  * ------------------------------------------------
@@ -53,23 +55,26 @@ public:
  * 💡 What You Learn / Key Takeaways
  * ---------------------------------
  * 1. **Incremental Constraint Narrowing**
- *    - Start with the *entire first string* as a possible prefix, 
+ *    - Start with the *entire first string* as a possible prefix,
  *      then gradually shrink it until it fits all others.
- *    - Teaches a **constraint reduction** mindset: start broad, 
+ *    - Teaches a **constraint reduction** mindset: start broad,
  *      tighten based on conflicts.
  *    - Mirrors the "reduce search space" idea in optimization problems.
  *
  * 2. **Prefix Checking via `find()`**
- *    - Smart use of `str.find(prefix) == 0` to test if a string starts with a prefix.
+ *    - Smart use of `str.find(prefix) == 0` to test if a string starts with a
+ * prefix.
  *    - Reinforces understanding of C++ string search semantics.
- *    - Introduces efficient string matching without manually looping characters.
+ *    - Introduces efficient string matching without manually looping
+ * characters.
  *
  * 3. **Iterative Refinement Pattern**
  *    - Common strategy:
  *        → Assume an answer (prefix)
  *        → Validate against each input
  *        → Trim until it works
- *    - A form of *incremental validation*, widely useful in text and pattern problems.
+ *    - A form of *incremental validation*, widely useful in text and pattern
+ * problems.
  *
  * 4. **Early Exit Thinking**
  *    - If prefix becomes empty → no need to continue.
@@ -105,11 +110,13 @@ public:
  *
  * 🚀 Bonus Insight
  * ----------------
- * - Shows how a simple concept (shared prefix) 
- *   can be attacked with multiple algorithmic patterns (scanning, recursion, binary search).
- * - Builds intuition for **pattern shrinking**, **prefix validation**, and **string safety**.
+ * - Shows how a simple concept (shared prefix)
+ *   can be attacked with multiple algorithmic patterns (scanning, recursion,
+ * binary search).
+ * - Builds intuition for **pattern shrinking**, **prefix validation**, and
+ * **string safety**.
  *
- * TL;DR: Longest Common Prefix teaches **iterative constraint reduction**, 
+ * TL;DR: Longest Common Prefix teaches **iterative constraint reduction**,
  * **efficient string comparison**, and **multi-approach problem solving** —
  * essential for mastering text-processing and search logic.
  */
