@@ -28,11 +28,13 @@ public:
  * 1. **Mathematical Reverse Pattern**
  *    - You can reverse an integer using modulus (%) and division (/).
  *    - Teaches you how to extract digits systematically and rebuild numbers.
- *    - Strengthens understanding of integer overflow handling (even if not needed here).
+ *    - Strengthens understanding of integer overflow handling (even if not
+ * needed here).
  *
  * 2. **String Conversion Shortcut**
  *    - Alternative approach using string reversal (`to_string`, `reverse`).
- *    - Demonstrates pros/cons of algorithmic vs. direct library-based solutions.
+ *    - Demonstrates pros/cons of algorithmic vs. direct library-based
+ * solutions.
  *    - Highlights the tradeoff between code simplicity and runtime efficiency.
  *
  * 3. **Early Edge Case Reasoning**
@@ -64,10 +66,11 @@ public:
  *
  * 🚀 Bonus Insight
  * ----------------
- * - Always analyze constraints: 
+ * - Always analyze constraints:
  *   Small input space allows clean brute-force or string-based solution.
  *   Larger input or overflow-prone data pushes you toward mathematical logic.
  *
- * TL;DR: This problem teaches **digit manipulation**, **edge-case awareness**, 
- * and **algorithmic symmetry** — fundamental building blocks for elegant thinking.
+ * TL;DR: This problem teaches **digit manipulation**, **edge-case awareness**,
+ * and **algorithmic symmetry** — fundamental building blocks for elegant
+ * thinking.
  */

@@ -1,24 +1,23 @@
 class Solution {
 public:
-    int climbStairs(int n) {
-        if (n <= 2) {
-            return n;
-        }
-
-        int oneStepBefore = 2;
-        int twoStepsBefore = 1;
-        int allWays = 0;
-
-        for (int i = 3; i <= n; i++) {
-            allWays = oneStepBefore + twoStepsBefore;
-            twoStepsBefore = oneStepBefore;
-            oneStepBefore = allWays;
-        }
-
-        return allWays;
+  int climbStairs(int n) {
+    if (n <= 2) {
+      return n;
     }
-};
 
+    int oneStepBefore = 2;
+    int twoStepsBefore = 1;
+    int allWays = 0;
+
+    for (int i = 3; i <= n; i++) {
+      allWays = oneStepBefore + twoStepsBefore;
+      twoStepsBefore = oneStepBefore;
+      oneStepBefore = allWays;
+    }
+
+    return allWays;
+  }
+};
 
 /*
  * 🎯 Problem: Climbing Stairs (LeetCode #70)
@@ -34,8 +33,9 @@ public:
  * 💡 What You Learn / Key Takeaways
  * ---------------------------------
  * 1. **Dynamic Programming in Disguise**
- *    - Classic intro problem to DP.  
- *    - Each step depends only on the previous two steps → overlapping subproblems.
+ *    - Classic intro problem to DP.
+ *    - Each step depends only on the previous two steps → overlapping
+ * subproblems.
  *    - Shows how recurrence relations lead directly to iterative DP solutions.
  *
  *    Recurrence:
@@ -50,7 +50,8 @@ public:
  * 3. **Space Optimization Pattern**
  *    - Instead of using an array `dp[n]`, we only keep the last two states.
  *    - Classic optimization: from O(n) → O(1) space.
- *    - This trick reappears everywhere (e.g., House Robber, Fibonacci, Stock DP problems).
+ *    - This trick reappears everywhere (e.g., House Robber, Fibonacci, Stock DP
+ * problems).
  *
  * 4. **Iterative Bottom-Up Approach**
  *    - Builds from smallest subproblems upward.
@@ -70,14 +71,16 @@ public:
  *
  * 7. **Algorithmic Mindset Shift**
  *    - Realization: sometimes brute force recursion is wasteful.
- *    - Transitioning to bottom-up logic teaches “state compression” — the essence of DP.
+ *    - Transitioning to bottom-up logic teaches “state compression” — the
+ * essence of DP.
  *
  * 8. **Complexity Analysis**
  *    - ⏱ Time: O(n) — one pass through all steps.
  *    - 🧠 Space: O(1) — constant memory for last two results.
  *
  * 9. **Math-Driven Insight**
- *    - The answer grows exponentially (like Fibonacci), but fits within 32-bit range for n ≤ 45.
+ *    - The answer grows exponentially (like Fibonacci), but fits within 32-bit
+ * range for n ≤ 45.
  *    - Recognizing mathematical growth helps predict potential overflow.
  *
  * 10. **Reusable DP Blueprint**
@@ -87,15 +90,14 @@ public:
  *        → Step-counting, jump-game, and similar recurrences.
  *
  * 11. **Philosophical Reflection**
- *     - Every climb you make builds on the two before it —  
- *       just like knowledge, just like progress.  
+ *     - Every climb you make builds on the two before it —
+ *       just like knowledge, just like progress.
  *       Each step’s strength is born from prior struggles.
  *
  * 🚀 TL;DR:
  * `climbStairs()` is a **textbook Fibonacci-DP hybrid** that teaches:
  * - State transition design
  * - Space optimization
- * - Iterative thinking  
+ * - Iterative thinking
  * It’s the “Hello World” of dynamic programming.
  */
-

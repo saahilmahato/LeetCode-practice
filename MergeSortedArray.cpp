@@ -2,32 +2,31 @@
 
 class Solution {
 public:
-    void merge(std::vector<int>& nums1, int m, std::vector<int>& nums2, int n) {
-        int i = m -1;
-        int j = n -1;
-        int k = m + n - 1;
+  void merge(std::vector<int> &nums1, int m, std::vector<int> &nums2, int n) {
+    int i = m - 1;
+    int j = n - 1;
+    int k = m + n - 1;
 
-        while (i >= 0 && j >= 0) {
-            if (nums1[i] > nums2[j]) {
-                nums1[k--] = nums1[i--];
-            } else {
-                nums1[k--] = nums2[j--];
-            }
-        }
-
-        while (j >= 0) {
-            nums1[k--] = nums2[j--];
-        }
+    while (i >= 0 && j >= 0) {
+      if (nums1[i] > nums2[j]) {
+        nums1[k--] = nums1[i--];
+      } else {
+        nums1[k--] = nums2[j--];
+      }
     }
-};
 
+    while (j >= 0) {
+      nums1[k--] = nums2[j--];
+    }
+  }
+};
 
 /*
  * 🎯 Problem: Merge Sorted Array (LeetCode #88)
  * --------------------------------------------
  * You are given two sorted arrays, nums1 and nums2, and two integers m and n,
  * representing the number of initialized elements in each.
- * 
+ *
  * The goal: merge nums2 into nums1 as one sorted array — *in place*.
  *
  * Example:
@@ -45,7 +44,8 @@ public:
  *    - This shows how to use extra *buffer space at the end* efficiently.
  *
  * 2. **Reverse Two-Pointer Pattern**
- *    - The core trick: fill from the *end* of nums1 to avoid overwriting valid data.
+ *    - The core trick: fill from the *end* of nums1 to avoid overwriting valid
+ * data.
  *    - Use three pointers:
  *        → i = index of last valid element in nums1
  *        → j = index of last element in nums2
@@ -70,7 +70,8 @@ public:
  *        → Merge Sort
  *        → Merging linked lists
  *        → Merging k sorted arrays or intervals
- *    - Core pattern: "compare heads of two sorted sequences → consume smaller (or larger)".
+ *    - Core pattern: "compare heads of two sorted sequences → consume smaller
+ * (or larger)".
  *
  * 6. **Edge Case Handling**
  *    - If `nums2` is empty → no action needed.
@@ -83,11 +84,14 @@ public:
  *
  * 8. **Practical Engineering Insight**
  *    - This technique mirrors *backfill algorithms* used in system buffers,
- *      string merging, and memory manipulation where overwriting must be avoided.
+ *      string merging, and memory manipulation where overwriting must be
+ * avoided.
  *
  * 9. **Conceptual Shift: Backward Thinking**
- *    - Merging from the end forces you to mentally invert the typical direction of algorithms.
- *    - Sharpens your “reverse traversal” intuition — an underrated but powerful mental model.
+ *    - Merging from the end forces you to mentally invert the typical direction
+ * of algorithms.
+ *    - Sharpens your “reverse traversal” intuition — an underrated but powerful
+ * mental model.
  *
  * 10. **Philosophical Reflection**
  *     - Sometimes in life (and code), merging smoothly means working backward,

@@ -1,34 +1,33 @@
-#include <string>
 #include <algorithm>
+#include <string>
 
 class Solution {
 public:
-    std::string addBinary(std::string a, std::string b) {
-        std::string result = "";
-        int i = a.size() - 1;
-        int j = b.size() - 1;
-        int carry = 0;
+  std::string addBinary(std::string a, std::string b) {
+    std::string result = "";
+    int i = a.size() - 1;
+    int j = b.size() - 1;
+    int carry = 0;
 
-        while (i >= 0 || j >= 0 || carry) {
-            int sum = carry;
+    while (i >= 0 || j >= 0 || carry) {
+      int sum = carry;
 
-            if (i >= 0) {
-                sum += a[i--] - '0';
-            }
+      if (i >= 0) {
+        sum += a[i--] - '0';
+      }
 
-            if (j >= 0) {
-                sum += b[j--] - '0';
-            }
+      if (j >= 0) {
+        sum += b[j--] - '0';
+      }
 
-            result += (sum % 2) + '0';
-            carry = sum / 2;
-        }
-
-        reverse(result.begin(), result.end());
-        return result;
+      result += (sum % 2) + '0';
+      carry = sum / 2;
     }
-};
 
+    reverse(result.begin(), result.end());
+    return result;
+  }
+};
 
 /*
  * 🎯 Problem: Add Binary (LeetCode #67)
@@ -72,7 +71,8 @@ public:
  *    - This “build-then-reverse” pattern is efficient and elegant.
  *
  * 6. **Handling Unequal Lengths**
- *    - Works even if `a` and `b` differ in length — checks both `i >= 0` and `j >= 0`.
+ *    - Works even if `a` and `b` differ in length — checks both `i >= 0` and `j
+ * >= 0`.
  *    - No padding or preprocessing required.
  *    - Great lesson in handling asymmetrical inputs gracefully.
  *
@@ -91,19 +91,22 @@ public:
  *
  * 9. **Complexity**
  *    - ⏱ Time: O(max(n, m)) — each digit processed once.
- *    - 🧠 Space: O(max(n, m)) — result size can be at most one larger than inputs.
+ *    - 🧠 Space: O(max(n, m)) — result size can be at most one larger than
+ * inputs.
  *
  * 10. **Big Picture Skill**
  *     - Teaches *how to simulate arithmetic manually*.
  *     - Strengthens control flow, condition handling, and modular reasoning.
- *     - Builds the foundation for implementing binary calculators, base converters,
- *       and even CPU instruction simulations.
+ *     - Builds the foundation for implementing binary calculators, base
+ * converters, and even CPU instruction simulations.
  *
  * 11. **Philosophical Reflection**
  *     - Addition is the act of merging bits — like merging perspectives.
- *     - The carry reminds us that progress sometimes overflows into the next position.
+ *     - The carry reminds us that progress sometimes overflows into the next
+ * position.
  *
  * 🚀 TL;DR:
- * `addBinary()` teaches **carry logic**, **digit traversal**, and **string arithmetic simulation**.
- * It’s not just about binary math — it’s about learning how machines *think* in 1s and 0s.
+ * `addBinary()` teaches **carry logic**, **digit traversal**, and **string
+ * arithmetic simulation**. It’s not just about binary math — it’s about
+ * learning how machines *think* in 1s and 0s.
  */
