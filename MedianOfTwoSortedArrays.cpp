@@ -6,8 +6,9 @@ public:
   double findMedianSortedArrays(std::vector<int> &nums1,
                                 std::vector<int> &nums2) {
     // Ensure nums1 is the smaller array to minimize the binary search range.
-    if (nums1.size() > nums2.size())
+    if (nums1.size() > nums2.size()) {
       return findMedianSortedArrays(nums2, nums1);
+    }
 
     int m = nums1.size();
     int n = nums2.size();
@@ -35,9 +36,7 @@ public:
           return (std::max(Aleft, Bleft) + std::min(Aright, Bright)) / 2.0;
         }
         // If total length is odd, return the max of left side
-        else {
-          return std::max(Aleft, Bleft);
-        }
+        return std::max(Aleft, Bleft);
       }
       // Move partition to the left in nums1
       else if (Aleft > Bright) {
