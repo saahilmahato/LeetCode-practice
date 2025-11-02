@@ -20,8 +20,8 @@ public:
 
     while (left <= right) {
       // Partition indices
-      int i = left + (right - left) / 2; // Partition index in nums1
-      int j = totalLeft - i;             // Corresponding partition in nums2
+      int i = (left + right) / 2; // Partition index in nums1
+      int j = totalLeft - i;      // Corresponding partition in nums2
 
       // Border elements around the partition
       int Aleft = (i == 0) ? INT_MIN : nums1[i - 1];
