@@ -1,115 +1,140 @@
+/**
+ * LeetCode Problem 28: Find the Index of the First Occurrence in a String (strStr)
+ * 
+ * Given two strings haystack and needle, return the index of the first occurrence
+ * of needle in haystack, or -1 if needle is not part of haystack.
+ * 
+ * Clarification:
+ *   - What should be returned if needle is an empty string?
+ *   - For this problem, return 0 (this matches the behavior of C's strstr() and Java's indexOf()).
+ * 
+ * Example 1:
+ *     Input: haystack = "sadbutsad", needle = "sad"
+ *     Output: 0
+ *     Explanation: "sad" occurs at index 0 and 6; first occurrence is at 0.
+ * 
+ * Example 2:
+ *     Input: haystack = "leetcode", needle = "leeto"
+ *     Output: -1
+ *     Explanation: "leeto" does not occur in "leetcode".
+ * 
+ * Example 3:
+ *     Input: haystack = "", needle = ""
+ *     Output: 0
+ * 
+ * Constraints:
+ *     - 0 <= haystack.length, needle.length <= 5 * 10^4
+ *     - haystack and needle consist of only lowercase English letters
+ */
+
 #include <string>
+using namespace std;
 
 class Solution {
 public:
-  int strStr(std::string haystack, std::string needle) {
-    int n = haystack.size();
-    int m = needle.size();
-
-    if (m == 0) {
-      return -1;
+    /**
+     * Implements strStr() using a naive substring search (brute force).
+     * 
+     * Approach:
+     *   - Handle empty needle separately → return 0 (per problem clarification).
+     *   - Iterate over possible starting positions i in haystack where needle could fit
+     *     (i from 0 to haystack.length - needle.length inclusive).
+     *   - For each i, attempt to match needle character-by-character.
+     *   - If all characters match (j reaches needle.length), return i.
+     *   - If no match found after all positions → return -1.
+     * 
+     * This is a straightforward O((n - m + 1) * m) solution (worst-case O(n * m)).
+     * Acceptable here due to constraints (n, m ≤ 5×10^4), but advanced algorithms
+     * like KMP achieve O(n + m).
+     * 
+     * Time Complexity:  O((n - m + 1) * m) ≈ O(n * m) worst case
+     * Space Complexity: O(1)
+     */
+    int strStr(string haystack, string needle) {
+        int n = haystack.size();
+        int m = needle.size();
+        
+        // Empty needle: return 0 (problem-specific rule)
+        if (m == 0) {
+            return 0;
+        }
+        
+        // If needle longer than haystack → impossible
+        if (m > n) {
+            return -1;
+        }
+        
+        // Check each possible starting position
+        for (int i = 0; i <= n - m; ++i) {
+            int j = 0;
+            // Match as many characters as possible
+            while (j < m && haystack[i + j] == needle[j]) {
+                ++j;
+            }
+            // Full match found
+            if (j == m) {
+                return i;
+            }
+        }
+        
+        return -1;
     }
-
-    for (int i = 0; i < n; ++i) {
-      int j = 0;
-      while (j < m && haystack[i + j] == needle[j]) {
-        j++;
-      }
-      if (j == m) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
 };
 
 /*
- * 🎯 Problem: Find the Index of the First Occurrence in a String (LeetCode #28)
- * ----------------------------------------------------------------------------
- * Given two strings — `haystack` and `needle` — find the index of the *first*
- * occurrence of `needle` in `haystack`.
- * If `needle` doesn’t appear, return -1.
- *
- * Example:
- *   haystack = "sadbutsad"
- *   needle   = "sad"
- *   Output   = 0   // because "sad" starts at index 0
- *
- * 💡 What You Learn / Key Takeaways
- * ---------------------------------
- * 1. **Fundamental Substring Search**
- *    - Introduces the idea of matching a *pattern* (needle) inside a *text*
- * (haystack).
- *    - A foundational step before advanced pattern-matching algorithms (KMP,
- * Rabin-Karp, Boyer-Moore).
- *    - Conceptually ties to compiler design, search engines, and DNA sequence
- * matching.
- *
- * 2. **Brute-Force Pattern Matching**
- *    - The simplest way to do substring search:
- *        → For each position `i` in the haystack:
- *            * Check if the substring starting at `i` matches `needle`.
- *        → If yes, return that index immediately.
- *    - Straightforward but potentially expensive: O(n * m) time complexity.
- *
- * 3. **Index Scanning Mindset**
- *    - Uses two indices:
- *        → `i`: points to the current start in the haystack.
- *        → `j`: walks through the needle to verify if a match holds.
- *    - A nested scan that teaches iterative comparison logic.
- *
- * 4. **Early Exit Optimization**
- *    - If at any position `i`, characters mismatch early, move to the next `i`.
- *    - As soon as `j == m`, we know the full substring matched — we can
- * instantly return `i`.
- *    - A clean example of loop short-circuiting and control flow mastery.
- *
- * 5. **Boundary Condition Literacy**
- *    - Checks if `needle` length `m` is zero — though many implementations
- * return `0` in that case, this one returns `-1` (LeetCode accepts both
- * interpretations depending on variant).
- *    - Edge cases build attention to precise definitions in problem specs.
- *
- * 6. **Algorithmic Tradeoffs**
- *    - Brute-force is simple and memory-light.
- *    - More advanced algorithms (KMP, Rabin-Karp) trade extra memory or
- * preprocessing for speed.
- *    - Reinforces the *clarity before optimization* principle — start simple,
- * then scale.
- *
- * 7. **Real-World Analogy**
- *    - Like searching for a keyword in a document — sliding the window and
- * checking each position.
- *    - The naive algorithm is how early text editors and grep tools started.
- *
- * 8. **Time and Space Complexity**
- *    - ⏱ Time: O(n * m) — for each of `n` positions, we may check up to `m`
- * characters.
- *    - 🧠 Space: O(1) — no extra data structures used.
- *
- * 9. **Pattern Recognition Training**
- *    - Builds intuition for substring matching.
- *    - The next step from here is learning how to *avoid redundant comparisons*
- * (KMP’s prefix table).
- *    - Strengthens foundations for string matching, regex engines, and search
- * algorithms.
- *
- * 10. **Educational Value**
- *     - Pure nested loop problem that trains patience and logical flow.
- *     - Excellent mental model for later dynamic programming or pattern
- * recognition problems.
- *
- * 🚀 Broader Insights
- * -------------------
- * - Introduces *pattern vs. text* paradigm — one of the deepest roots in
- * algorithm theory.
- * - Highlights how brute-force approaches often suffice in constrained
- * environments.
- * - Serves as a gateway to exploring *efficient text searching algorithms*.
- *
- * TL;DR:
- * `strStr()` teaches **pattern searching**, **index tracking**, and **control
- * flow design**. It’s the first handshake with a family of powerful algorithms
- * that fuel compilers, search engines, and even bioinformatics.
+ * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * 
+ * DSA Pattern:
+ *   - String Matching (Naive/Brute Force)
+ *   - Sliding Window over starting positions
+ *   - Character-by-character comparison
+ * 
+ * Key Learnings:
+ *   1. Always handle empty needle explicitly → return 0 (common gotcha).
+ *   2. Limit outer loop to i <= n - m to prevent out-of-bounds access.
+ *   3. Inner matching can use while or for loop — both fine.
+ *   4. Naive approach is simple and sufficient for small-medium constraints.
+ *   5. Worst case: repeated characters (e.g., haystack="aaaaa...a", needle="aaaa...b")
+ *      → many partial matches.
+ *   6. In real systems, use built-in functions (std::string::find, strstr).
+ * 
+ * Interview Tips:
+ *   - Start with naive solution — it's easy to explain and code correctly.
+ *   - Clearly discuss edge cases:
+ *        - Empty needle → 0
+ *        - Empty haystack (non-empty needle) → -1
+ *        - needle longer than haystack → -1
+ *        - Single character match
+ *        - No match
+ *        - Multiple possible matches (return earliest)
+ *   - Mention time complexity honestly; if asked for better → introduce KMP.
+ *   - KMP Insight: Precompute prefix table (LPS) for needle to skip unnecessary comparisons.
+ *      O(n + m) time, but more complex to implement under pressure.
+ *   - Alternative: Rabin-Karp (hashing) for average O(n + m).
+ * 
+ * Related Problems to Practice:
+ *   - 28.  Implement strStr() (this one)
+ *   - KMP Algorithm (build LPS array)
+ *   - 459. Repeated Substring Pattern
+ *   - 214. Shortest Palindrome (KMP application)
+ *   - 796. Rotate String
+ *   - Rabin-Karp problems
  */
+
+// Example usage (uncomment to test locally)
+/*
+#include <iostream>
+
+int main() {
+    Solution sol;
+    
+    std::cout << sol.strStr("sadbutsad", "sad") << std::endl;  // 0
+    std::cout << sol.strStr("leetcode", "leeto") << std::endl; // -1
+    std::cout << sol.strStr("hello", "ll") << std::endl;       // 2
+    std::cout << sol.strStr("", "") << std::endl;              // 0
+    std::cout << sol.strStr("a", "a") << std::endl;            // 0
+    std::cout << sol.strStr("abc", "d") << std::endl;          // -1
+    
+    return 0;
+}
+*/
