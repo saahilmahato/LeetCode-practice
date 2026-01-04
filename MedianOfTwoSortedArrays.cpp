@@ -1,172 +1,165 @@
-#include <climits>
+/**
+ * LeetCode Problem 4: Median of Two Sorted Arrays
+ * 
+ * Given two sorted arrays nums1 and nums2 of size m and n respectively,
+ * return the median of the two sorted arrays.
+ * 
+ * The overall run time complexity should be O(log (m + n)).
+ * 
+ * Example 1:
+ *     Input: nums1 = [1,3], nums2 = [2]
+ *     Output: 2.00000
+ * 
+ * Example 2:
+ *     Input: nums1 = [1,2], nums2 = [3,4]
+ *     Output: 2.50000
+ * 
+ * Example 3:
+ *     Input: nums1 = [], nums2 = [1]
+ *     Output: 1.00000
+ * 
+ * Constraints:
+ *     - nums1.length == m
+ *     - nums2.length == n
+ *     - 0 <= m <= 1000
+ *     - 0 <= n <= 1000
+ *     - 1 <= m + n <= 2000
+ *     - -10^6 <= nums1[i], nums2[i] <= 10^6
+ */
+
+#include <algorithm>  // for std::max, std::min
+#include <climits>    // for INT_MIN, INT_MAX
 #include <vector>
+using namespace std;
 
 class Solution {
 public:
-  double findMedianSortedArrays(std::vector<int> &nums1,
-                                std::vector<int> &nums2) {
-    // Ensure nums1 is the smaller array to minimize the binary search range.
-    if (nums1.size() > nums2.size()) {
-      return findMedianSortedArrays(nums2, nums1);
-    }
-
-    int m = nums1.size();
-    int n = nums2.size();
-
-    // Total number of elements in the left half of the partition
-    int totalLeft = (m + n + 1) / 2;
-
-    int left = 0, right = m; // Binary search range on nums1
-
-    while (left <= right) {
-      // Partition indices
-      int i = (left + right) / 2; // Partition index in nums1
-      int j = totalLeft - i;      // Corresponding partition in nums2
-
-      // Border elements around the partition
-      int Aleft = (i == 0) ? INT_MIN : nums1[i - 1];
-      int Aright = (i == m) ? INT_MAX : nums1[i];
-      int Bleft = (j == 0) ? INT_MIN : nums2[j - 1];
-      int Bright = (j == n) ? INT_MAX : nums2[j];
-
-      // Check if correct partition is found
-      if (Aleft <= Bright && Bleft <= Aright) {
-        // If total length is even, average the two middle elements
-        if ((m + n) % 2 == 0) {
-          return (std::max(Aleft, Bleft) + std::min(Aright, Bright)) / 2.0;
+    /**
+     * Finds the median of two sorted arrays using binary search on partitions.
+     * 
+     * Approach (Binary Search on Partition):
+     *   - To achieve O(log(min(m,n))) time, perform binary search on the smaller array.
+     *   - Goal: Find a partition in nums1 (index i) such that the left half
+     *     (nums1[0..i-1] + nums2[0..j-1]) has exactly (m+n+1)/2 elements,
+     *     and max(left half) <= min(right half).
+     *   - Use sentinel values INT_MIN/INT_MAX to handle boundary cases cleanly.
+     *   - Once valid partition found:
+     *       - Odd total length → median is max(Aleft, Bleft)
+     *       - Even total length → median is average of max(Aleft, Bleft) and min(Aright, Bright)
+     * 
+     * Why (m + n + 1)/2?
+     *   - Ensures left half has one extra element for odd case → max(left) is the median.
+     * 
+     * Time Complexity:  O(log(min(m, n)))
+     * Space Complexity: O(1)
+     */
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        // Ensure nums1 is the smaller array for optimal binary search range
+        if (nums1.size() > nums2.size()) {
+            return findMedianSortedArrays(nums2, nums1);
         }
-        // If total length is odd, return the max of left side
-        return std::max(Aleft, Bleft);
-      }
-      // Move partition to the left in nums1
-      else if (Aleft > Bright) {
-        right = i - 1;
-      }
-      // Move partition to the right in nums1
-      else {
-        left = i + 1;
-      }
+        
+        int m = nums1.size();
+        int n = nums2.size();
+        
+        // Number of elements needed in the left half
+        int totalLeft = (m + n + 1) / 2;
+        
+        // Binary search on partition of smaller array (nums1)
+        int left = 0;
+        int right = m;
+        
+        while (left <= right) {
+            int i = left + (right - left) / 2;  // Partition in nums1
+            int j = totalLeft - i;              // Corresponding partition in nums2
+            
+            // Boundary elements (with sentinels)
+            int Aleft  = (i == 0) ? INT_MIN : nums1[i - 1];
+            int Aright = (i == m) ? INT_MAX : nums1[i];
+            int Bleft  = (j == 0) ? INT_MIN : nums2[j - 1];
+            int Bright = (j == n) ? INT_MAX : nums2[j];
+            
+            // Valid partition found
+            if (Aleft <= Bright && Bleft <= Aright) {
+                // Odd total length
+                if ((m + n) % 2 == 1) {
+                    return std::max(Aleft, Bleft);
+                }
+                // Even total length
+                return (std::max(Aleft, Bleft) + std::min(Aright, Bright)) / 2.0;
+            }
+            // Too far right in nums1 → move left
+            else if (Aleft > Bright) {
+                right = i - 1;
+            }
+            // Too far left in nums1 → move right
+            else {
+                left = i + 1;
+            }
+        }
+        
+        // Should never reach here for valid inputs
+        return 0.0;
     }
-
-    // Control should never reach here for valid inputs
-    return 0.0;
-  }
 };
 
 /*
- * 🎯 Problem: Median of Two Sorted Arrays (LeetCode #4)
- * ----------------------------------------------------
- * Given two sorted arrays nums1 and nums2, return the median of the two arrays.
- * The overall run-time complexity should be O(log(min(m, n))).
- *
- * Example:
- *   Input: nums1 = [1, 3], nums2 = [2]
- *   Output: 2.0
- *   Explanation: The merged array would be [1, 2, 3], and the median is 2.
- *
- * 💡 Core Concept:
- * ----------------
- * You’re finding the **median** without merging arrays.
- * Instead of merging (O(m + n)), we use **binary search** on the *smaller*
- * array to find the perfect partition that divides both arrays into equal
- * halves.
- *
- * Each partition guarantees:
- *   - All elements in the "left half" ≤ all elements in the "right half".
- *
- * When that’s true, we can compute the median directly from the border
- * elements.
- *
- * ------------------------------------------------------------------------
- * 🧠 Step-by-Step Mental Model
- * ------------------------------------------------------------------------
- *
- * 1️⃣ **Binary Search on the Shorter Array**
- *     - We always search on nums1 (the smaller array) for efficiency.
- *     - Partition nums1 at index `i` and nums2 at index `j = totalLeft - i`.
- *
- * 2️⃣ **Partition Logic**
- *     - Left half of combined arrays → first `totalLeft` elements.
- *     - Right half → the rest.
- *
- *        nums1: [ .... | .... ]
- *                     ↑
- *                     i
- *
- *        nums2: [ .... | .... ]
- *                     ↑
- *                     j
- *
- * 3️⃣ **Define Border Values**
- *     - Aleft  = element just before partition in nums1
- *     - Aright = element just after partition in nums1
- *     - Bleft  = element just before partition in nums2
- *     - Bright = element just after partition in nums2
- *
- *     Use sentinel values (INT_MIN / INT_MAX) when partitions are at
- * boundaries.
- *
- * 4️⃣ **Check Partition Validity**
- *     - Correct partition satisfies:
- *           Aleft ≤ Bright
- *           Bleft ≤ Aright
- *     - If not, adjust binary search:
- *           → If Aleft > Bright → move left (right = i - 1)
- *           → Else              → move right (left = i + 1)
- *
- * 5️⃣ **Compute the Median**
- *     - Total length even:
- *         median = (max(Aleft, Bleft) + min(Aright, Bright)) / 2.0
- *     - Total length odd:
- *         median = max(Aleft, Bleft)
- *
- * ------------------------------------------------------------------------
- * ⚙️  Complexity
- * ------------------------------------------------------------------------
- *  ⏱ Time  → O(log(min(m, n)))
- *  🧠 Space → O(1)
- *
- * ------------------------------------------------------------------------
- * 🔍 Why It Works:
- * ------------------------------------------------------------------------
- * The binary search finds the correct *cut* where the “left” part of both
- * arrays contains exactly half the elements (or one more if odd length).
- *
- * From that cut, we can directly infer the median because:
- * - The left max and right min are the only two candidates that matter.
- * - Everything else is guaranteed to be smaller or larger accordingly.
- *
- * ------------------------------------------------------------------------
- * ⚡ Key Insights
- * ------------------------------------------------------------------------
- * - You’re not searching for a *value*, you’re searching for a *partition
- * index*.
- * - The partition condition behaves like a “sorted constraint” check.
- * - By abstracting the merge process, you simulate it without performing it.
- * - This is one of the cleanest demonstrations of **binary search beyond
- * numbers**.
- *
- * ------------------------------------------------------------------------
- * 🧩 Edge Cases
- * ------------------------------------------------------------------------
- * - One array empty → median from the other.
- * - Arrays of unequal length.
- * - Overlapping or disjoint ranges.
- * - Negative numbers and duplicates.
- *
- * ------------------------------------------------------------------------
- * 🧭 Philosophical Reflection
- * ------------------------------------------------------------------------
- * Finding the *median* is about balance — dividing chaos into two perfect
- * halves. Like life, it’s less about sorting everything out, and more about
- * finding the point where both sides agree to coexist in symmetry.
- *
- * ------------------------------------------------------------------------
- * 🚀 TL;DR
- * ------------------------------------------------------------------------
- * - Avoid merging — partition smartly.
- * - Binary search the smaller array.
- * - Derive the median from partition boundaries.
- * - O(log(min(m, n))) elegance — a gold standard for binary search
- * applications.
+ * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * 
+ * DSA Pattern:
+ *   - Binary Search on Answer/Partition
+ *   - Two Pointers with Sentinels
+ *   - Optimized Median Finding
+ * 
+ * Key Learnings:
+ *   1. Classic hard problem demonstrating binary search beyond simple lookup.
+ *   2. Key insight: median depends on partitioning into equal-sized halves.
+ *   3. Using (m + n + 1)/2 handles both odd/even cases elegantly.
+ *   4. Sentinels (INT_MIN/INT_MAX) simplify boundary checks.
+ *   5. Swapping to make nums1 smaller ensures optimal complexity.
+ *   6. Alternative: merge arrays O(m+n) → simple but not logarithmic.
+ * 
+ * Interview Tips:
+ *   - Start with the insight: "We binary search for the correct partition point
+ *     where left half elements <= right half elements."
+ *   - Draw the partition diagram: show i in nums1, j in nums2, check cross conditions.
+ *   - Explain why Aleft <= Bright and Bleft <= Aright.
+ *   - Discuss edge cases:
+ *        - One array empty
+ *        - Single element
+ *        - Odd vs even total length
+ *        - All elements same
+ *        - Extreme values (sentinels handle)
+ *   - Mention time proof: log(min(m,n)) iterations, O(1) per iteration.
+ *   - If asked for implementation details: emphasize avoiding overflow in mid calculation.
+ * 
+ * Related Problems to Practice:
+ *   - 4.   Median of Two Sorted Arrays (this one)
+ *   - Kth Element in Two Sorted Arrays (generalization)
+ *   - 410. Split Array Largest Sum (similar binary search on answer)
+ *   - Merge k sorted arrays (priority queue)
+ *   - 23.  Merge k Sorted Lists (similar merging)
  */
+
+// Example usage (uncomment to test locally)
+/*
+#include <iostream>
+
+int main() {
+    Solution sol;
+    
+    vector<int> nums1 = {1, 3};
+    vector<int> nums2 = {2};
+    cout << sol.findMedianSortedArrays(nums1, nums2) << endl;  // 2.0
+    
+    vector<int> nums3 = {1, 2};
+    vector<int> nums4 = {3, 4};
+    cout << sol.findMedianSortedArrays(nums3, nums4) << endl;  // 2.5
+    
+    vector<int> nums5 = {};
+    vector<int> nums6 = {1};
+    cout << sol.findMedianSortedArrays(nums5, nums6) << endl;  // 1.0
+    
+    return 0;
+}
+*/
