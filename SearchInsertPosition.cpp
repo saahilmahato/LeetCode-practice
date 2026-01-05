@@ -1,114 +1,147 @@
+/**
+ * LeetCode Problem 35: Search Insert Position
+ * 
+ * Given a sorted array of distinct integers nums and a target value,
+ * return the index if the target is found. If not, return the index where it would be
+ * if it were inserted in order.
+ * 
+ * You must write an algorithm with O(log n) runtime complexity.
+ * 
+ * Example 1:
+ *     Input: nums = [1,3,5,6], target = 5
+ *     Output: 2
+ * 
+ * Example 2:
+ *     Input: nums = [1,3,5,6], target = 2
+ *     Output: 2
+ * 
+ * Example 3:
+ *     Input: nums = [1,3,5,6], target = 7
+ *     Output: 4
+ * 
+ * Example 4:
+ *     Input: nums = [1], target = 0
+ *     Output: 0
+ * 
+ * Constraints:
+ *     - 1 <= nums.length <= 10^4
+ *     - -10^4 <= nums[i] <= 10^4
+ *     - nums contains distinct values sorted in ascending order
+ *     - -10^4 <= target <= 10^4
+ */
+
 #include <vector>
+using namespace std;
 
 class Solution {
 public:
-  int searchInsert(std::vector<int> &nums, int target) {
-    int left = 0;
-    int right = nums.size() - 1;
-
-    while (left <= right) {
-      int mid = (left + right) / 2;
-
-      if (nums[mid] == target) {
-        return mid;
-      }
-
-      if (nums[mid] < target) {
-        left = mid + 1;
-      }
-
-      if (nums[mid] > target) {
-        right = mid - 1;
-      }
+    /**
+     * Finds the position to insert target in a sorted array using binary search.
+     * 
+     * Approach (Standard Binary Search for Lower Bound):
+     *   - Use two pointers: left = 0, right = nums.size() - 1
+     *   - While left <= right:
+     *       - Compute mid = left + (right - left) / 2 (avoids overflow)
+     *       - If nums[mid] == target → return mid
+     *       - If nums[mid] < target → search right half (left = mid + 1)
+     *       - If nums[mid] > target → search left half (right = mid - 1)
+     *   - When loop ends, left is the smallest index where nums[left] >= target
+     *     → correct insertion point.
+     * 
+     * This is the classic "lower bound" implementation.
+     * 
+     * Time Complexity:  O(log n) - halves search space each step
+     * Space Complexity: O(1) - only a few variables
+     */
+    int searchInsert(vector<int>& nums, int target) {
+        int left = 0;
+        int right = nums.size() - 1;
+        
+        while (left <= right) {
+            // Avoid potential overflow (though unlikely with n <= 10^4)
+            int mid = left + (right - left) / 2;
+            
+            if (nums[mid] == target) {
+                return mid;  // Exact match found
+            }
+            
+            if (nums[mid] < target) {
+                left = mid + 1;  // Target is in right half
+            } else {
+                right = mid - 1; // Target is in left half
+            }
+        }
+        
+        // left is the insertion position when target not found
+        return left;
     }
-
-    return left;
-  }
 };
 
 /*
- * 🎯 Problem: Search Insert Position (LeetCode #35)
- * -------------------------------------------------
- * Given a sorted array `nums` and a target value `target`, return the index
- * if the target is found. If not, return the index where it would be inserted
- * in order (to maintain sorting).
- *
- * Example:
- *   nums = [1,3,5,6], target = 5 → Output = 2
- *   nums = [1,3,5,6], target = 2 → Output = 1
- *   nums = [1,3,5,6], target = 7 → Output = 4
- *
- * 💡 What You Learn / Key Takeaways
- * ---------------------------------
- * 1. **Binary Search Mastery**
- *    - A core algorithmic pillar.
- *    - Time complexity: O(log n) — elegant and efficient.
- *    - Divides the problem space in half with every iteration.
- *    - The pattern here is *compare, discard half, repeat* — fundamental for
- * scalability.
- *
- * 2. **Left / Right Pointer Paradigm**
- *    - Classic two-pointer technique on sorted data.
- *    - `left` and `right` define the current search window.
- *    - Adjust them based on comparisons with `mid`.
- *    - Teaches interval narrowing logic that appears in heaps, binary trees,
- * and graphs.
- *
- * 3. **Midpoint Calculation**
- *    - `int mid = (left + right) / 2;`
- *    - Mid index splits the array into two halves.
- *    - Note: in extreme cases (large arrays), use `left + (right - left)/2` to
- * avoid overflow — though here it’s safe.
- *    - Building awareness of numeric overflow is a *pro-level mindset*.
- *
- * 4. **Decision Logic Simplification**
- *    - If `nums[mid] == target` → found it, return index.
- *    - Else if smaller → move right (`left = mid + 1`).
- *    - Else if larger → move left (`right = mid - 1`).
- *    - Clean, predictable logic flow that’s easy to reason about.
- *
- * 5. **Return Insert Position**
- *    - The key insight: when the loop ends, `left` is *exactly* where the
- * target should be inserted.
- *    - No post-processing needed — `left` has evolved to the correct position
- * naturally.
- *    - That’s elegant algorithmic minimalism — simplicity doing heavy lifting.
- *
- * 6. **Algorithmic Pattern Recognition**
- *    - Binary search variants appear everywhere:
- *        - Searching in rotated arrays
- *        - Finding square roots
- *        - Allocating minimum capacity (e.g. "ship packages in D days" problem)
- *        - Searching on answer spaces (parametric search)
- *    - Once you master this, 10+ other LeetCode problems click instantly.
- *
- * 7. **Control Flow Discipline**
- *    - The `while (left <= right)` loop and consistent pointer updates prevent
- * infinite loops.
- *    - Trains precision and off-by-one error awareness.
- *    - Boundary management is one of the most subtle algorithmic arts.
- *
- * 8. **Complexity Analysis**
- *    - ⏱ Time: O(log n)
- *    - 🧠 Space: O(1)
- *    - Ideal for real-time lookup operations.
- *
- * 9. **Mental Model:**
- *    - Think of a **dictionary search**:
- *      - You open in the middle (mid).
- *      - If the word you want is alphabetically later, flip forward (right
- * half).
- *      - If earlier, flip backward (left half).
- *      - Keep halving until found.
- *
- * 10. **Philosophical Lesson**
- *     - Binary search isn’t just a technique; it’s a mindset:
- *       *Eliminate half of your confusion with every decision.*
- *     - An algorithmic meditation on focus and clarity.
- *
- * 🚀 TL;DR:
- * `searchInsert()` reinforces **binary search fundamentals**,
- * **off-by-one accuracy**, and **boundary reasoning**.
- * It’s a must-master template that underpins a huge chunk of efficient coding
- * interviews.
+ * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * 
+ * DSA Pattern:
+ *   - Binary Search (Classic Template)
+ *   - Lower Bound Search
+ *   - Sorted Array Processing
+ * 
+ * Key Learnings:
+ *   1. When loop condition is left <= right and we adjust left/right accordingly,
+ *      left ends up as the lower bound (first position >= target).
+ *   2. Using left + (right - left)/2 prevents integer overflow.
+ *   3. Handles all cases:
+ *      - Target found → exact index
+ *      - Target smaller than all → 0
+ *      - Target larger than all → nums.size()
+ *      - Target between elements → correct insertion point
+ *   4. Array has distinct elements → no duplicates to worry about.
+ *   5. This is the standard binary search template for insertion point.
+ * 
+ * Interview Tips:
+ *   - Explain the invariant: "left is always the potential insertion point."
+ *   - Walk through an example: nums=[1,3,5,6], target=2 → show iterations.
+ *   - Discuss why left after loop: "All elements before left are < target."
+ *   - Mention variations:
+ *      - Upper bound: right = mid - 1 when nums[mid] <= target
+ *      - std::lower_bound in C++ does exactly this
+ *   - Edge cases:
+ *      - Empty array (not possible per constraints)
+ *      - Single element
+ *      - Target at boundaries
+ *   - Time/space: O(log n) time, O(1) space — required by problem.
+ * 
+ * Related Problems to Practice:
+ *   - 35.  Search Insert Position (this one)
+ *   - 34.  Find First and Last Position of Element in Sorted Array
+ *   - 33.  Search in Rotated Sorted Array
+ *   - 74.  Search a 2D Matrix
+ *   - 162. Find Peak Element
+ *   - Binary search on answer problems (e.g., 410. Split Array Largest Sum)
  */
+
+// Example usage (uncomment to test locally)
+/*
+#include <iostream>
+
+void printVector(const vector<int>& vec) {
+    cout << "[";
+    for (size_t i = 0; i < vec.size(); ++i) {
+        cout << vec[i];
+        if (i < vec.size() - 1) cout << ",";
+    }
+    cout << "]" << endl;
+}
+
+int main() {
+    Solution sol;
+    
+    vector<int> nums1 = {1,3,5,6};
+    cout << "nums = "; printVector(nums1);
+    cout << "target = 5 → " << sol.searchInsert(nums1, 5) << endl;  // 2
+    cout << "target = 2 → " << sol.searchInsert(nums1, 2) << endl;  // 1
+    cout << "target = 7 → " << sol.searchInsert(nums1, 7) << endl;  // 4
+    cout << "target = 0 → " << sol.searchInsert(nums1, 0) << endl;  // 0
+    
+    return 0;
+}
+*/
