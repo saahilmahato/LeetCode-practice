@@ -1,130 +1,143 @@
+/**
+ * LeetCode Problem 6: Zigzag Conversion
+ * 
+ * The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this:
+ * 
+ * P   A   H   N
+ * A P L S I I G
+ * Y   I   R
+ * 
+ * And then read line by line: "PAHNAPLSIIGYIR"
+ * 
+ * Write the code that will take a string and make this conversion given a number of rows.
+ * 
+ * Example 1:
+ *     Input: s = "PAYPALISHIRING", numRows = 3
+ *     Output: "PAHNAPLSIIGYIR"
+ * 
+ * Example 2:
+ *     Input: s = "PAYPALISHIRING", numRows = 4
+ *     Output: "PINALSIGYAHRPI"
+ *     Explanation:
+ *         P     I    N
+ *         A   L S  I G
+ *         Y A   H R
+ *         P     I
+ * 
+ * Example 3:
+ *     Input: s = "A", numRows = 1
+ *     Output: "A"
+ * 
+ * Constraints:
+ *     - 1 <= s.length <= 1000
+ *     - s consists of English letters (lower-case and upper-case), ',' and '.'.
+ *     - 1 <= numRows <= 1000
+ */
+
 #include <string>
 #include <vector>
+using namespace std;
 
 class Solution {
 public:
-  std::string convert(std::string s, int numRows) {
-    if (numRows == 1 || s.size() <= numRows) {
-      return s;
+    /**
+     * Converts a string to its zigzag pattern representation on numRows rows.
+     * 
+     * Approach (Simulation with Direction Flag):
+     *   - If numRows == 1 or string shorter than rows → no zigzag → return original.
+     *   - Create a vector of strings, one for each row.
+     *   - Track current row and direction (down/up).
+     *   - For each character:
+     *       - Append to current row.
+     *       - If at top (0) or bottom (numRows-1) → reverse direction.
+     *       - Move current row up or down accordingly.
+     *   - Concatenate all rows to form result.
+     * 
+     * This directly simulates the zigzag writing process.
+     * 
+     * Time Complexity:  O(n) where n = s.length() (single pass)
+     * Space Complexity: O(n) - for storing rows (required for output)
+     */
+    string convert(string s, int numRows) {
+        // No zigzag needed
+        if (numRows == 1 || s.size() <= static_cast<size_t>(numRows)) {
+            return s;
+        }
+        
+        vector<string> rows(numRows);
+        int currRow = 0;
+        bool goingDown = false;  // Start going down after first char
+        
+        for (char c : s) {
+            rows[currRow] += c;
+            
+            // Reverse direction at boundaries
+            if (currRow == 0 || currRow == numRows - 1) {
+                goingDown = !goingDown;
+            }
+            
+            // Move to next row
+            currRow += goingDown ? 1 : -1;
+        }
+        
+        // Concatenate all rows
+        string result;
+        for (const string& row : rows) {
+            result += row;
+        }
+        
+        return result;
     }
-
-    std::vector<std::string> rows(numRows);
-    int currRow = 0;
-    bool goingDown = false;
-
-    for (char c : s) {
-      rows[currRow] += c;
-      if (currRow == 0 || currRow == numRows - 1) {
-        goingDown = !goingDown;
-      }
-      currRow += goingDown ? 1 : -1;
-    }
-
-    std::string result;
-    for (std::string &row : rows) {
-      result += row;
-    }
-
-    return result;
-  }
 };
 
 /*
- * 🎯 Problem: Zigzag Conversion (LeetCode #6)
- * -------------------------------------------
- * Convert a given string `s` into a zigzag pattern on a given number of rows,
- * then read the pattern row by row.
- *
- * Example:
- *   Input:  s = "PAYPALISHIRING", numRows = 3
- *   Zigzag:
- *     P   A   H   N
- *     A P L S I I G
- *     Y   I   R
- *   Output: "PAHNAPLSIIGYIR"
- *
- * ------------------------------------------------------------------------
- * 💡 Core Idea
- * ------------------------------------------------------------------------
- * Instead of *building the actual zigzag*, simulate the traversal:
- *  - Each character belongs to one of `numRows`.
- *  - The "zigzag" just means you move *down* through rows,
- *    then *up diagonally* — repeatedly.
- *
- * So we just need to:
- *  - Track the current row index.
- *  - Flip direction when we hit the top or bottom.
- *  - Append characters to the correct row string.
- *
- * ------------------------------------------------------------------------
- * ⚙️ Step-by-Step Logic
- * ------------------------------------------------------------------------
- * 1️⃣ Edge cases:
- *     - If `numRows == 1`, there’s no zigzag, just return the string.
- *     - If string length ≤ numRows, each char gets its own row, return as is.
- *
- * 2️⃣ Initialize a vector of strings, one for each row.
- *
- * 3️⃣ Use:
- *     - `currRow` to track which row we’re adding to.
- *     - `goingDown` boolean to flip direction at boundaries.
- *
- * 4️⃣ For each character in `s`:
- *     - Add it to `rows[currRow]`.
- *     - If at top (row 0) or bottom (row numRows-1), flip `goingDown`.
- *     - Move `currRow` up or down accordingly.
- *
- * 5️⃣ Concatenate all row strings at the end → final result.
- *
- * ------------------------------------------------------------------------
- * 🧠 Example Walkthrough
- * ------------------------------------------------------------------------
- *   s = "PAYPALISHIRING", numRows = 3
- *
- *   Index tracing:
- *     Row 0: P   A   H   N
- *     Row 1: A P L S I I G
- *     Row 2: Y   I   R
- *
- *   Direction flips at top & bottom.
- *   Combine → "PAHNAPLSIIGYIR"
- *
- * ------------------------------------------------------------------------
- * ⏱ Complexity
- * ------------------------------------------------------------------------
- *   Time  → O(n)    (each char processed once)
- *   Space → O(n)    (stores intermediate row strings)
- *
- * ------------------------------------------------------------------------
- * 🧩 Knowledge Patterns Learned
- * ------------------------------------------------------------------------
- * ✅ **Simulation Pattern**
- *     - Don’t overcomplicate by visualizing the full 2D grid.
- *     - Track just the minimal state (row, direction).
- *
- * ✅ **State Toggle Pattern**
- *     - Flipping a boolean flag (`goingDown`) at boundaries is a common
- *       and powerful trick in directional problems.
- *
- * ✅ **String Accumulation Trick**
- *     - Collect partial results (rows) separately, combine at end.
- *
- * ✅ **Waveform Thinking**
- *     - Recognize cyclical patterns (down → up → down).
- *     - Similar structure shows up in problems like “spiral matrix”,
- *       “staircase traversal”, or “matrix diagonal read”.
- *
- * ------------------------------------------------------------------------
- * 🚀 TL;DR
- * ------------------------------------------------------------------------
- * - Track which row you’re on.
- * - Move down and up alternately.
- * - Append characters row-wise.
- * - Join all rows for the final string.
- *
- * ------------------------------------------------------------------------
- * 🧭 Philosophical Reflection
- * ------------------------------------------------------------------------
- * The zigzag is life — a constant oscillation between highs and lows.
- * The trick isn’t to avoid direction changes — it’s to record them beautifully.
+ * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * 
+ * DSA Pattern:
+ *   - String Simulation
+ *   - Direction Tracking (Zigzag Traversal)
+ *   - Vector of Strings for Row Building
+ * 
+ * Key Learnings:
+ *   1. Simulate the zigzag path using a direction flag.
+ *   2. Direction reverses at row 0 and row numRows-1.
+ *   3. Early return for numRows=1 or short string → optimization.
+ *   4. Space is O(n) anyway (output size), so vector of strings is fine.
+ *   5. Alternative: Mathematical index calculation → more complex, similar complexity.
+ *   6. Handles all edge cases:
+ *      - numRows = 1
+ *      - numRows >= string length
+ *      - Single character
+ * 
+ * Interview Tips:
+ *   - Explain simulation: "We mimic writing the string in zigzag, row by row."
+ *   - Draw the zigzag for numRows=3 and trace the path.
+ *   - Discuss why direction flag: "Simulates going down then up."
+ *   - Mention mathematical approach if asked for optimization (but simulation is clearer).
+ *   - Time/space: O(n) time, O(n) space — optimal.
+ *   - Common mistake: Off-by-one in direction change or row indexing.
+ * 
+ * Related Problems to Practice:
+ *   - 6.   Zigzag Conversion (this one)
+ *   - 151. Reverse Words in a String
+ *   - 557. Reverse Words in a String III
+ *   - 68.  Text Justification (harder string formatting)
+ *   - 71.  Simplify Path (string manipulation)
+ *   - String building problems
  */
+
+// Example usage (uncomment to test locally)
+/*
+#include <iostream>
+
+int main() {
+    Solution sol;
+    
+    std::cout << sol.convert("PAYPALISHIRING", 3) << std::endl;  // "PAHNAPLSIIGYIR"
+    std::cout << sol.convert("PAYPALISHIRING", 4) << std::endl;  // "PINALSIGYAHRPI"
+    std::cout << sol.convert("A", 1) << std::endl;              // "A"
+    std::cout << sol.convert("AB", 1) << std::endl;             // "AB"
+    
+    return 0;
+}
+*/
