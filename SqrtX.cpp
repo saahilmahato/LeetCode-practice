@@ -1,116 +1,135 @@
+/**
+ * LeetCode Problem 69: Sqrt(x)
+ * 
+ * Given a non-negative integer x, return the square root of x rounded down to the nearest integer.
+ * The returned integer should be non-negative as well.
+ * 
+ * You must not use any built-in exponent function or operator (e.g., pow(x, 0.5) or x ** 0.5).
+ * 
+ * Example 1:
+ *     Input: x = 4
+ *     Output: 2
+ * 
+ * Example 2:
+ *     Input: x = 8
+ *     Output: 2
+ *     Explanation: sqrt(8) = 2.828... → floor to 2
+ * 
+ * Example 3:
+ *     Input: x = 0
+ *     Output: 0
+ * 
+ * Example 4:
+ *     Input: x = 1
+ *     Output: 1
+ * 
+ * Example 5:
+ *     Input: x = 2147395599
+ *     Output: 46339
+ * 
+ * Constraints:
+ *     - 0 <= x <= 2^31 - 1
+ */
+
 class Solution {
 public:
-  int mySqrt(int x) {
-    if (x < 2) {
-      return x;
+    /**
+     * Computes the integer square root of x using binary search.
+     * 
+     * Approach (Binary Search on Answer):
+     *   - For x < 2 → return x (handles 0 and 1).
+     *   - Search range: left = 1, right = x / 2 (since sqrt(x) <= x/2 for x >= 2).
+     *   - While left <= right:
+     *       - mid = left + (right - left) / 2 (overflow-safe).
+     *       - Compute sq = mid * mid using long long to prevent overflow.
+     *       - If sq == x → exact match → return mid.
+     *       - If sq < x → possible higher → update ans = mid, search right half.
+     *       - If sq > x → too high → search left half.
+     *   - Return ans (the largest mid where mid*mid <= x).
+     * 
+     * Time Complexity:  O(log x) - halves search space each iteration
+     * Space Complexity: O(1)
+     */
+    int mySqrt(int x) {
+        // Base cases: 0 or 1
+        if (x < 2) {
+            return x;
+        }
+        
+        int left = 1;
+        int right = x / 2;
+        int ans = 0;
+        
+        while (left <= right) {
+            // Overflow-safe mid calculation
+            long long mid = left + (right - left) / 2;
+            long long sq = mid * mid;
+            
+            if (sq == x) {
+                return mid;  // Exact square root found
+            }
+            
+            if (sq < x) {
+                ans = mid;       // mid is a candidate (floor value)
+                left = mid + 1;  // Search higher
+            } else {
+                right = mid - 1; // Search lower
+            }
+        }
+        
+        return ans;
     }
-
-    int left = 1;
-    int right = x / 2;
-    int ans = 0;
-
-    while (left <= right) {
-      long long mid = (left + right) / 2;
-      long long sq = mid * mid;
-
-      if (sq == x) {
-        return mid;
-      }
-
-      if (sq < x) {
-        ans = mid;
-        left = mid + 1;
-      } else {
-        right = mid - 1;
-      }
-    }
-
-    return ans;
-  }
 };
 
 /*
- * 🎯 Problem: Sqrt(x) (LeetCode #69)
- * -----------------------------------
- * Given a non-negative integer `x`, compute and return the integer part of
- * its square root. (Truncate the decimal part — no rounding.)
- *
- * Example:
- *   Input:  x = 8
- *   Output: 2  // because sqrt(8) ≈ 2.828...
- *
- * 💡 What You Learn / Key Takeaways
- * ---------------------------------
- * 1. **Binary Search Beyond Arrays**
- *    - This problem demonstrates that binary search isn’t limited to arrays.
- *    - Here, it’s applied to a *mathematical search space* — the range [1,
- * x/2].
- *    - Elegant proof that binary search is a *pattern of thought*, not just a
- * data structure trick.
- *
- * 2. **Problem Reformulation**
- *    - We’re essentially finding the *largest integer `mid` such that* `mid² ≤
- * x`.
- *    - This transforms a continuous math problem into a discrete search
- * problem.
- *    - Beautiful example of *quantization* — turning real math into integer
- * logic.
- *
- * 3. **Monotonic Property**
- *    - The key insight enabling binary search:
- *        → If `mid² < x`, the answer must be *to the right*.
- *        → If `mid² > x`, the answer must be *to the left*.
- *    - Recognizing monotonic behavior is the foundation of all
- * binary-search-based numeric algorithms.
- *
- * 4. **Edge Case Awareness**
- *    - For `x < 2`, the square root equals itself (0 or 1).
- *    - Prevents division by zero and unnecessary looping.
- *    - Classic base case optimization for O(1) behavior.
- *
- * 5. **Precision & Overflow Protection**
- *    - `mid * mid` can overflow for large `x` (near INT_MAX).
- *    - Using `long long` ensures safe multiplication.
- *    - This demonstrates defensive coding — anticipating integer overflow.
- *
- * 6. **Tracking Last Valid Answer**
- *    - When `sq < x`, we record `ans = mid`.
- *    - Even if we overshoot and the loop ends, `ans` holds the correct
- * truncated sqrt.
- *    - This is a *pattern*: “store best candidate before moving boundary.”
- *      It appears in many search-based optimization problems.
- *
- * 7. **Algorithmic Pattern: Numeric Binary Search**
- *    - Binary search is not just “find index”; it’s “find boundary where
- * condition flips.”
- *    - Similar structure applies to:
- *        - Finding nth root
- *        - Minimizing functions
- *        - Parametric search problems (“minimum capacity”, “maximum speed”)
- *
- * 8. **Complexity Analysis**
- *    - ⏱ Time: O(log x) — each step halves the search interval.
- *    - 🧠 Space: O(1) — uses only constant extra memory.
- *    - Optimal for numeric search.
- *
- * 9. **Mathematical Insight**
- *    - sqrt(x) lies between 1 and x/2 for x > 1 (since (x/2)² > x for x > 4).
- *    - Understanding these bounds is a subtle math trick baked into algorithm
- * design.
- *
- * 10. **Binary Search as a Numerical Tool**
- *     - This is a stepping stone to **Newton’s method**, **binary root
- * finding**, and **floating-point refinement**.
- *     - Many advanced algorithms reuse this skeleton for higher-precision
- * calculations.
- *
- * 11. **Philosophical Reflection**
- *     - Binary search here mirrors a meditative practice — halving uncertainty
- * step by step until clarity (or `ans`) emerges.
- *     - The answer isn’t guessed; it’s *narrowed into existence*.
- *
- * 🚀 TL;DR:
- * `mySqrt()` is a brilliant showcase of **binary search abstraction**,
- * **overflow safety**, and **mathematical reasoning turned into code**. It’s
- * where you realize binary search isn’t about data — it’s about decisions.
+ * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * 
+ * DSA Pattern:
+ *   - Binary Search on Answer
+ *   - Integer Overflow Prevention
+ *   - Mathematical Bounds
+ * 
+ * Key Learnings:
+ *   1. Binary search works because the function mid*mid is monotonic (non-decreasing).
+ *   2. Use long long for sq to prevent overflow (mid up to ~2^30, mid*mid up to ~2^60).
+ *   3. Search up to x/2: for x >= 4, sqrt(x) <= x/2.
+ *   4. Store ans to track the best floor value found.
+ *   5. Handles large x without built-in sqrt functions.
+ *   6. Edge cases:
+ *      - x = 0 or 1
+ *      - Perfect squares
+ *      - x = INT_MAX (2147483647 → 46340)
+ * 
+ * Interview Tips:
+ *   - Explain why binary search: "We search for the largest integer mid where mid*mid <= x."
+ *   - Discuss overflow: "int mid*mid can overflow → use long long."
+ *   - Walk through x=8: show iterations and ans updates.
+ *   - Mention Newton's method alternative (faster convergence, but more complex).
+ *   - Time/space: O(log x) time, O(1) space — optimal.
+ *   - Common mistake: Using int for sq → undefined behavior on overflow.
+ * 
+ * Related Problems to Practice:
+ *   - 69.  Sqrt(x) (this one)
+ *   - 367. Valid Perfect Square (check if perfect square with similar method)
+ *   - 50.  Pow(x, n) (exponentiation with binary search ideas)
+ *   - 374. Guess Number Higher or Lower (classic binary search template)
+ *   - 162. Find Peak Element
+ *   - Binary search on answer problems (e.g., minimum speed, capacity)
  */
+
+// Example usage (uncomment to test locally)
+/*
+#include <iostream>
+
+int main() {
+    Solution sol;
+    
+    std::cout << sol.mySqrt(4) << std::endl;   // 2
+    std::cout << sol.mySqrt(8) << std::endl;   // 2
+    std::cout << sol.mySqrt(0) << std::endl;   // 0
+    std::cout << sol.mySqrt(1) << std::endl;   // 1
+    std::cout << sol.mySqrt(2147395599) << std::endl;  // 46339
+    
+    return 0;
+}
+*/
