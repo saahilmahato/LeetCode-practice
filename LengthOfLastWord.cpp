@@ -73,7 +73,7 @@ public:
 };
 
 /*
- * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * Study Notes & Interview Tips:
  * 
  * DSA Pattern:
  *   - String Traversal (Reverse Direction)

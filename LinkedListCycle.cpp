@@ -78,7 +78,7 @@ public:
 };
 
 /*
- * Study Notes & Interview Tips (Embedded for Quick Reference):
+ * Study Notes & Interview Tips:
  * 
  * DSA Pattern:
  *   - Fast and Slow Pointers (Floyd's Cycle Detection / Tortoise and Hare)
