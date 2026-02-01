@@ -47,7 +47,7 @@ public:
         int start = 0;
         int end = s.size() - 1;
 
-        while (start <= end) {
+        while (start < end) {
             // Swap characters at start and end
             char temp = s[start];
             s[start] = s[end];
@@ -82,10 +82,6 @@ public:
  *   - Using extra arrays (violates O(1) space requirement)
  *   - Incorrect loop condition
  *   - Off-by-one errors
- *
- * Minor Optimization:
- *   - Loop condition can be start < end instead of <=
- *     (avoids redundant self-swap for odd length)
  *
  * Related Problems to Practice:
  *   - 344. Reverse String           (this problem)
