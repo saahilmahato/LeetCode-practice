@@ -54,10 +54,7 @@ public:
      *
      * Space Complexity: O(n)
      */
-    vector<int> nextGreaterElement(
-        vector<int>& nums1,
-        vector<int>& nums2) {
-
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
         unordered_map<int, int> nextGreater;
         stack<int> st;
 
