@@ -1,4 +1,4 @@
-class Solution {
+class FlipSquareSubMatrixVertically {
     public int[][] reverseSubmatrix(int[][] grid, int x, int y, int k) {
         for (int i = 0; i < k/2; i++) {
             int topRowIndex = x + i;
