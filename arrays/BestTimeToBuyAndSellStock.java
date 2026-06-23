@@ -1,6 +1,6 @@
 package arrays;
 
-class BesttimeToBuyAndSellStock {
+class BestTimeToBuyAndSellStock {
 
     public int maxProfitBruteForce(int[] prices) {
         int maxProfit = 0;
